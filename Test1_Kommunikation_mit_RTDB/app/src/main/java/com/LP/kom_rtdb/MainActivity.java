@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.time.LocalTime;
 
@@ -22,8 +25,11 @@ public class MainActivity extends AppCompatActivity {
         knopf.setOnClickListener((View.OnClickListener) this);
 
          */
-    }
 
+        TextView mytf = findViewById(R.id.tokendp);
+        mytf.setText(FirebaseMessaging.getInstance().getToken().toString());
+
+    }
 
     public void lick(View v){
 
