@@ -4,7 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/a/Software_Projekt/Test1_Kommunikation_mit_RTDB/app/src/main/res/layout/activity_main.xml" value="0.3625" />
+        <entry key="..\:/githubcloneverzeichnis/androidapptuerklingel/Test1_Kommunikation_mit_RTDB/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1345" />
+        <entry key="..\:/githubcloneverzeichnis/androidapptuerklingel/Test1_Kommunikation_mit_RTDB/app/src/main/res/drawable/ic_launcher_sp_ring_foreground.xml" value="0.267" />
         <entry key="..\:/githubcloneverzeichnis/androidapptuerklingel/Test1_Kommunikation_mit_RTDB/app/src/main/res/layout/activity_main.xml" value="0.26145833333333335" />
+        <entry key="..\:/githubcloneverzeichnis/androidapptuerklingel/Test1_Kommunikation_mit_RTDB/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1345" />
+        <entry key="..\:/githubcloneverzeichnis/androidapptuerklingel/Test1_Kommunikation_mit_RTDB/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1345" />
       </map>
     </option>
   </component>
