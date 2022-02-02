@@ -1,6 +1,7 @@
 package com.LP.kom_rtdb;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,14 +10,19 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -38,11 +44,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void click_download(View v){
+    public void click_download(View v) throws IOException {
 
         ImageView imageView = findViewById(R.id.image);
 
         StorageReference storageReference = storage.getReferenceFromUrl("gs://tuerklingel-a0ba8.appspot.com/pictures/Testfoto.png");
+
+        //islandRef = storageRef.child("images/island.jpg");
+
+        File localFile = File.createTempFile("images", "jpg");
+
 
         Glide.with(this /* context */)
                 .load(storageReference)
