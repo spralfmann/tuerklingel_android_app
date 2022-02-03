@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:onClick="openthedoor"
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/tokendp"
+        android:id="@+id/test_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="token"
@@ -19,6 +20,7 @@
         app:layout_constraintVertical_bias="0.587" />
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sende eine 1 in die Datenbank"
@@ -31,10 +33,20 @@
         android:id="@+id/bt_sende"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SENDEN"
         android:onClick="lick"
+        android:text="SENDEN"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="158dp"
         tools:layout_editor_absoluteY="301dp" />
+
+    <Button
+        android:id="@+id/dooropener"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="89dp"
+        android:text="Tür öffnen"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
