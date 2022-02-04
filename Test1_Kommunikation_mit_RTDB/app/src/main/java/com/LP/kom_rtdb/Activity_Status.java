@@ -42,7 +42,7 @@ public class Activity_Status {
         DatabaseReference myRef = database.getReference(pathalarmon);
         boolean alarmstat = true;
         if(alarmstat){
-                        
+
         }
     }
 
