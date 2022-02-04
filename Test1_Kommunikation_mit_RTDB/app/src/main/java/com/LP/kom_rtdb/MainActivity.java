@@ -1,9 +1,11 @@
 package com.LP.kom_rtdb;
 
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +20,9 @@ import com.google.firebase.database.core.Path;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.time.LocalTime;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,18 +33,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*
-        Button knopf = findViewById(R.id.bt_sende);
-        knopf.setOnClickListener((View.OnClickListener) this);
-
 
         // Abonniert den Topic, für das Empfangen der Benachrichtigungen der Türklingel
+        /*
+        // Abonniere die Topics für das Türklingeln und den Sicherheitsalarm
         FirebaseMessaging.getInstance().subscribeToTopic("/topics/ring");
+        FirebaseMessaging.getInstance().subscribeToTopic("/topics/alarm");
 
         // Zeigt den aktuellen Device Token für den Firebase Messaging Service an
         TextView mytf = findViewById(R.id.test_text);
         mytf.setText(FirebaseMessaging.getInstance().getToken().toString());
          */
+
+        // Erstelle einen Scheduled Abruf der Datenbankdaten
+
+        Runnable getStatusDatabase  = new Runnable() {
+            @Override
+            public void run() {
+                // Rufe den Status in der Database ab
+                Log.println(Log.INFO, "scheduledexecutor","succeed" );
+            }
+        };
+
+        // rufe den Runnable alle 3 Sekunden auf
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleWithFixedDelay(/* Funktion */ getStatusDatabase,0,3, TimeUnit.SECONDS);
 
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -67,8 +85,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /*
+        // Daten einmal auslesen
+        DataSnapshot mDatabase = null;
+        String userId=null;
+        mDatabase.child("users").child(userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                }
+                else {
+                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                }
+            }
+        });
+        */
+
     }
 
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void lick(View v){
 
         // Schreibt in die Firebase RTDB

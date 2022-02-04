@@ -12,38 +12,42 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Activity_Status {
 
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = database.getReference().getRoot();
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     // Verwalte den Firebase Database /Status
     private final String pathdoor = "/status/door";
-    private final String pathtriggeropen = "/status/triggeropen";
 
     public void setdoortrigger (){
-        // setzte Variable in RTDB auf eins
         if (true){
-            myRef = database.getReference(pathtriggeropen);
+            // setzte Variable in RTDB auf eins
+            String pathtriggeropen = "/status/triggeropen";
+            DatabaseReference myRef = database.getReference(pathtriggeropen);
             myRef.setValue(1);
+
+            // graue den Button x Sekunden aus
         }
         else{
             //
         }
-
-        // graue den Button x Sekunden aus
-
     }
 
-    public String getdoorstat (){
+    public String getStatus (){
         // Lese den Datenbankwert für die
-
         return "";
     }
 
-
-
-
+    public void toggleAlarm(){
+        // Lese Alarm aus
+        String pathalarmon = "/status/alarmon";
+        DatabaseReference myRef = database.getReference(pathalarmon);
+        boolean alarmstat = true;
+        if(alarmstat){
+                        
+        }
     }
 
-
-
 }
+
+
+
+
