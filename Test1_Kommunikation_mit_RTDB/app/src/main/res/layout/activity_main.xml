@@ -4,49 +4,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:onClick="openthedoor"
     tools:context=".MainActivity">
-
-    <TextView
-        android:id="@+id/test_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="token"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.587" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sende eine 1 in die Datenbank"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/bt_sende"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="lick"
+        android:layout_marginStart="158dp"
+        android:layout_marginTop="1dp"
         android:text="SENDEN"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="158dp"
-        tools:layout_editor_absoluteY="301dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/dooropener"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="89dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="166dp"
+        android:onClick="openDoor"
         android:text="Tür öffnen"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/switchalarmon" />
+
+    <Button
+        android:id="@+id/refreshpicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="37dp"
+        android:text="Rufe Bild ab"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dooropener" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="217dp"
+        android:layout_height="126dp"
+        android:layout_marginTop="48dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/doorstatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tür:   n.a." />
+
+        <TextView
+            android:id="@+id/lockstatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lock:  n.a." />
+
+        <TextView
+            android:id="@+id/alarmstatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Alarm:   n.a." />
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/switchalarmon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:checked="false"
+        android:minHeight="48dp"
+        android:onClick="toggleAlarm"
+        android:text="Alarm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bt_sende" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

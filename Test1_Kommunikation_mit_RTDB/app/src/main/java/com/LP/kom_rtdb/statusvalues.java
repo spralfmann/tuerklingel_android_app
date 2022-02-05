@@ -1,8 +1,5 @@
 package com.LP.kom_rtdb;
 
-import com.bumptech.glide.load.model.ByteArrayLoader;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
-import com.google.android.gms.common.server.converter.StringToIntConverter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -10,6 +7,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class statusvalues {
+
+    public Boolean alarmon = false;
+    public Boolean triggeropen = false;
+    public Boolean dooropen = false;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("");
@@ -43,7 +44,7 @@ public class statusvalues {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 String value = dataSnapshot.getValue(String.class);
-                door = value
+                door = value;
             }
 
             @Override
