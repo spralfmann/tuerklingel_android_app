@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,16 +21,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
     // Variables for the values of status in the Realtime Database
-    public boolean door, alarm, lock, takePic;
+    public boolean door, alarm, lock, takePic, alert;
     public String latestRing, latestAlarm, latestPicture;
     // Database
     FirebaseDatabase database = FirebaseDatabase.getInstance();
+    // all elements to set red in alert mode
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
         
         // Set Listener on Values of Status
         setListener();
+        getLatestPicture("gs://tuerklingel-a0ba8.appspot.com/pictures/"+"Testfoto"+".jpg");
+
+        // subscribe the topics of ring and alert
+        FirebaseMessaging.getInstance().subscribeToTopic("/topics/ring");
+        FirebaseMessaging.getInstance().subscribeToTopic("/topics/alarm");
+
+
     }
 
     // function for open door button
@@ -68,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReference latestAlarmRef = database.getReference("/status/latestalarm");
         DatabaseReference latestPictureRef = database.getReference("/status/latestpic");
         DatabaseReference takePictureRef = database.getReference("/status/takepicture");
+        DatabaseReference alertRef = database.getReference("/status/alert");
         // DataChange Listener on status values in the rt db
         doorRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -235,6 +250,36 @@ public class MainActivity extends AppCompatActivity {
                 // Failed to read value
             }
         });
+        alertRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                try {
+                    alert = dataSnapshot.getValue(Boolean.class);
+                    TextView alertView = findViewById(R.id.alert_textview);
+                    Button deactAlert = findViewById(R.id.deactivatealert);
+                    ColorActivity ca = new ColorActivity(alert);
+                    //ca.setColorButtons();
+                    if (alert){
+                        alertView.setVisibility(TextView.VISIBLE);
+                        deactAlert.setVisibility(TextView.VISIBLE);
+                    }
+                    else {
+                        alertView.setVisibility(TextView.INVISIBLE);
+                        deactAlert.setVisibility(TextView.INVISIBLE);
+                    }
+                }
+                catch (Exception e){
+                    Log.println(Log.INFO,"EventListener","Falscher Datentyp");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+            }
+        });
     }
     // function for making an viewable format for a date out of the rt db
     public String stringInMyDateFormat(String rtdbString){
@@ -268,12 +313,16 @@ public class MainActivity extends AppCompatActivity {
                 toggleStatusValue(takePic ,"/status/takepicture");
                 Button requbtn = findViewById(R.id.requestpicture);
                 requbtn.setText("Taking picture...");
-                requbtn.setBackgroundColor(0xAA11FF22);
+                requbtn.setBackgroundColor(0xAA11DD22);
             }
         }
         catch (Exception error){
             // error
         }
+    }
+    // deactivate the alarm, set values alarmon and alert to false
+    public void btClickDeactivateAlarm(android.view.View view){
+
     }
     // set picture in imageView in main from path
     public void getLatestPicture(String path){
@@ -297,4 +346,18 @@ public class MainActivity extends AppCompatActivity {
             // Error
         }
     }
+
+    /*
+    public void setColorButtons(){
+        for (int i = 0; i<3; i++) {
+            Button btn = findViewById(idButtons[i]);
+            if (!alert){
+                btn.setBackgroundColor(0xFF4A61E0);
+            }
+            else{
+                btn.setBackgroundColor(0xFFDB2F07);
+            }
+        }
+    }
+     */
 }

@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/completeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -64,6 +65,19 @@
         android:layout_marginTop="4dp"
         android:onClick="btClickRequestPicture"
         android:text="Request Picture"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/refreshpicture" />
+
+    <Button
+        android:id="@+id/deactivatealert"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="232dp"
+        android:layout_marginTop="136dp"
+        android:onClick="btClickDeactivateAlarm"
+        android:text="Deactivate alert"
+        android:visibility="invisible"
+        app:backgroundTint="@color/alert"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/refreshpicture" />
 
@@ -141,5 +155,22 @@
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/doorstatus" />
+
+    <TextView
+        android:id="@+id/alert_textview"
+        android:layout_width="181dp"
+        android:layout_height="88dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="150dp"
+        android:text="Alert!"
+        android:textAlignment="center"
+        android:textColor="@color/red"
+        android:textSize="48sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/latestring_textview" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
