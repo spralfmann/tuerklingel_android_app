@@ -3,29 +3,32 @@ package com.lp.spring_first_combine;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class MainActivity extends AppCompatActivity {
 
     // Variables for the values of status in the Realtime Database
-    public boolean door, alarm, lock;
-    public String latestRing, latestAlarm;
+    public boolean door, alarm, lock, takePic;
+    public String latestRing, latestAlarm, latestPicture;
     // Database
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    // Tool for Database
-    StatusActivity statusActivity;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReference lockRef = database.getReference("/status/lockopen");
         DatabaseReference latestRingRef = database.getReference("/status/latestring");
         DatabaseReference latestAlarmRef = database.getReference("/status/latestalarm");
+        DatabaseReference latestPictureRef = database.getReference("/status/latestpic");
+        DatabaseReference takePictureRef = database.getReference("/status/takepicture");
         // DataChange Listener on status values in the rt db
         doorRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -132,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else {
                         opener.setText("Open door");
-                        opener.setBackgroundColor(0xFF4AA7E0);
+                        opener.setBackgroundColor(0xFF4A61E0);
                     }
                 }
                 catch (Exception e){
@@ -185,12 +190,58 @@ public class MainActivity extends AppCompatActivity {
                 // Failed to read value
             }
         });
+        latestPictureRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                try {
+                    latestPicture = dataSnapshot.getValue(String.class);
+                    TextView viewLastPic = findViewById(R.id.latestpic_textview);
+                    viewLastPic.setText(stringInMyDateFormat(latestPicture));
+                    String urlLatestPic = ("gs://tuerklingel-a0ba8.appspot.com/pictures/"+latestPicture+".jpg");
+                    getLatestPicture(urlLatestPic);
+                }
+                catch (Exception e){
+                    Log.println(Log.INFO,"EventListener","Falscher Datentyp");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+            }
+        });
+        takePictureRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                try {
+                    takePic = dataSnapshot.getValue(Boolean.class);
+                    Button requbtn = findViewById(R.id.requestpicture);
+                    if (!takePic){
+                        requbtn.setText("Request picture");
+                        requbtn.setBackgroundColor(0xFF4A61E0);
+                    }
+                }
+                catch (Exception e){
+                    Log.println(Log.INFO,"EventListener","Falscher Datentyp");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+            }
+        });
     }
     // function for making an viewable format for a date out of the rt db
     public String stringInMyDateFormat(String rtdbString){
         return rtdbString.substring(0,2)+"."+rtdbString.substring(2,4)+"."+rtdbString.substring(4,8)+" "+rtdbString.substring(8,10)+":"+rtdbString.substring(10,12);
     }
-
+    // Toggle Bool Variables in Realtime Database with Input of the current value
+    // an the path, which contain the value to Change
     public void toggleStatusValue(Boolean currentvalue, String path){
         try{
             DatabaseReference toggleRef = database.getReference(path);
@@ -205,5 +256,45 @@ public class MainActivity extends AppCompatActivity {
             // Fehler
         }
     }
-
+    // Refresh Button Click to get the newest picture from storage
+    public void btClickRefresh(android.view.View view){
+        String urlLatestPic = ("gs://tuerklingel-a0ba8.appspot.com/pictures/"+latestPicture+".jpg");
+        getLatestPicture(urlLatestPic);
+    }
+    // set the take picture value to true
+    public void btClickRequestPicture(android.view.View view){
+        try {
+            if (!takePic){
+                toggleStatusValue(takePic ,"/status/takepicture");
+                Button requbtn = findViewById(R.id.requestpicture);
+                requbtn.setText("Taking picture...");
+                requbtn.setBackgroundColor(0xAA11FF22);
+            }
+        }
+        catch (Exception error){
+            // error
+        }
+    }
+    // set picture in imageView in main from path
+    public void getLatestPicture(String path){
+        try {
+            // Picture download from Firebase Storage
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            // Url of the newest picture in storage
+            StorageReference gsReference = storage.getReferenceFromUrl(path);
+            ImageView mIm = (ImageView) findViewById(R.id.imageView);
+            final long ONE_MEGABYTE=1024*1024;
+            //https://stackoverflow.com/questions/57152775/how-to-set-an-imageview-with-a-picture-from-firebase-storage
+            gsReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                    mIm.setImageBitmap(bitmap);
+                }
+            });
+        }
+        catch (Exception e){
+            // Error
+        }
+    }
 }
