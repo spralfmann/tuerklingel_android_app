@@ -3,6 +3,7 @@ package com.lp.spring_first_combine;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
@@ -344,6 +345,15 @@ public class MainActivity extends AppCompatActivity {
         }
         catch (Exception e){
             // Error
+        }
+    }
+
+    public void historychange(android.view.View view){
+        String button_text;
+        button_text = ((Button) view).getText().toString();
+        if (button_text.equals("History Ring")) {
+            Intent intent2 = new Intent(this, HistoryRingsActivity.class);
+            startActivity(intent2);
         }
     }
 
