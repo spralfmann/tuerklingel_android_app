@@ -24,9 +24,9 @@ public class HistoryActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*
         setContentView(R.layout.history);
 
-        /*
         ring = new Ring();
         listView = (ListView) findViewById(R.id.listviewrings);
 

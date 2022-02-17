@@ -1,9 +1,12 @@
 package com.lp.spring_first_combine.ui.main;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,7 +15,16 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.lp.spring_first_combine.R;
+import com.lp.spring_first_combine.Ring;
 import com.lp.spring_first_combine.databinding.FragmentHistoryTabbedBinding;
+
+import java.util.ArrayList;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -24,14 +36,14 @@ public class PlaceholderFragment extends Fragment {
     private PageViewModel pageViewModel;
     private FragmentHistoryTabbedBinding binding;
 
-    /*
+
     FirebaseDatabase database;
     DatabaseReference databaseReference;
     ListView listView;
     ArrayList<Ring> arrayList = new ArrayList<>();
     ArrayAdapter<Ring> arrayAdapter;
     Ring ring;
-    */
+
 
     public static PlaceholderFragment newInstance(int index) {
         PlaceholderFragment fragment = new PlaceholderFragment();
@@ -51,7 +63,7 @@ public class PlaceholderFragment extends Fragment {
         }
         pageViewModel.setIndex(index);
 
-        /*
+
         ring = new Ring();
         listView = (ListView) listView.findViewById(R.id.listviewring);
 
@@ -60,7 +72,7 @@ public class PlaceholderFragment extends Fragment {
 
         arrayList = new ArrayList<>();
 
-        Context context = getContext();
+        Context context = getActivity();
         arrayAdapter = new ArrayAdapter<Ring>(context, R.layout.ring_info, R.id.ringInfo);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -79,7 +91,7 @@ public class PlaceholderFragment extends Fragment {
             }
         });
 
-         */
+
 
     }
 
