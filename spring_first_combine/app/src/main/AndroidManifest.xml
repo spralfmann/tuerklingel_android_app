@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Spring_first_combine">
         <activity
+            android:name=".history_tabbed"
+            android:exported="false"
+            android:label="@string/title_activity_history_tabbed"
+            android:theme="@style/Theme.Spring_first_combine.NoActionBar" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -17,9 +22,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-        <activity android:name=".HistoryRingsActivity"></activity>
+        <activity android:name=".HistoryActivity" />
     </application>
 
 </manifest>

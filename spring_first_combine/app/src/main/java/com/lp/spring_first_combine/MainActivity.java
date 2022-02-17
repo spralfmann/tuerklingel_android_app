@@ -1,20 +1,16 @@
 package com.lp.spring_first_combine;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -25,8 +21,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -323,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
     }
     // deactivate the alarm, set values alarmon and alert to false
     public void btClickDeactivateAlarm(android.view.View view){
-
+        toggleStatusValue(alert ,"/status/alert");
     }
     // set picture in imageView in main from path
     public void getLatestPicture(String path){
@@ -352,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
         String button_text;
         button_text = ((Button) view).getText().toString();
         if (button_text.equals("History Ring")) {
-            Intent intent2 = new Intent(this, HistoryRingsActivity.class);
+            Intent intent2 = new Intent(this, history_tabbed.class);
             startActivity(intent2);
         }
     }
