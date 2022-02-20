@@ -1,7 +1,9 @@
 package com.lp.spring_first_combine;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -37,7 +39,7 @@ public class HistoryRingActivity extends Activity {
         databaseReference = database.getReference("rings");
 
         arrayList = new ArrayList<>();
-        arrayAdapter = new ArrayAdapter<Ring>(this, R.layout.ring_info,R.id.ringInfo,arrayList);
+        arrayAdapter = new ArrayAdapter<Ring>(this, R.layout.event_overview,R.id.EventInfo,arrayList);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -55,4 +57,11 @@ public class HistoryRingActivity extends Activity {
             }
         });
     }
+
+    // navigate back to main view, activated by back button in top corner
+    public void backToMain(View view){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
 }
