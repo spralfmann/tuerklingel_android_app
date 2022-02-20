@@ -346,7 +346,11 @@ public class MainActivity extends AppCompatActivity {
         String button_text;
         button_text = ((Button) view).getText().toString();
         if (button_text.equals("History Ring")) {
-            Intent intent2 = new Intent(this, history_tabbed.class);
+            Intent intent2 = new Intent(this, HistoryRingActivity.class);
+            startActivity(intent2);
+        }
+        else if(button_text.equals("History Alarm")){
+            Intent intent2 = new Intent(this, HistoryAlarmActivity.class);
             startActivity(intent2);
         }
     }
