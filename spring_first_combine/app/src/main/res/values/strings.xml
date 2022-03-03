@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">SPring</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment_rings">ring hello test</string>
+    <string name="alarm_test_page">alarm test page</string>
+    <string name="ring_test_page">ring test page</string>
+    <string name="title_activity_history_tabbed">history_tabbed</string>
+    <string name="tab_text_1">Rings</string>
+    <string name="tab_text_2">Alarms</string>
+</resources>
