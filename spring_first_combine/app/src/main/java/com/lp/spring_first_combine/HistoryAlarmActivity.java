@@ -17,35 +17,40 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class HistoryAlarmActivity extends Activity {
-    FirebaseDatabase database1;
-    DatabaseReference databaseReference1;
-    ListView listView1;
-    ArrayList<Ring> arrayList1 = new ArrayList<>();
-    ArrayAdapter<Ring> arrayAdapter1;
-    Ring ring1;
+
+    // Identisch zu HistoryRingActivity, hier jetzt für die Alarme und der entsprechenden XML: "activity_history_alarms.xml"
+    // Code-Erläuterungen siehe HistoryRingActivity
+
+    FirebaseDatabase database;
+    DatabaseReference databaseReference;
+    ListView listView;
+    ArrayList<Ring> arrayList = new ArrayList<>();
+    ArrayAdapter<Ring> arrayAdapter;
+    Ring ring;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_alarms);
 
-        ring1 = new Ring();
-        listView1 = (ListView) findViewById(R.id.listviewalarm);
+        ring = new Ring();
+        listView = (ListView) findViewById(R.id.listviewalarm);
 
-        database1 = FirebaseDatabase.getInstance();
-        databaseReference1 = database1.getReference("alarm");
+        database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference("alarm");
 
-        arrayList1 = new ArrayList<>();
-        arrayAdapter1 = new ArrayAdapter<Ring>(this, R.layout.ring_info,R.id.ringInfo,arrayList1);
-        databaseReference1.addValueEventListener(new ValueEventListener() {
+        arrayList = new ArrayList<>();
+        arrayAdapter = new ArrayAdapter<Ring>(this, R.layout.event_overview,R.id.EventInfo, arrayList);
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                arrayList1.clear();
+                arrayList.clear();
                 for (DataSnapshot ds: snapshot.getChildren()){
-                    ring1 = ds.getValue(Ring.class);
-                    arrayList1.add(ring1);
+                    ring = ds.getValue(Ring.class);
+                    arrayList.add(ring);
                 }
-                listView1.setAdapter(arrayAdapter1);
+                listView.setAdapter(arrayAdapter);
             }
 
             @Override

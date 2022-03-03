@@ -24,348 +24,371 @@ import com.google.firebase.storage.StorageReference;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Variables for the values of status in the Realtime Database
-    public boolean door, alarm, lock, takePic, alert;
-    public String latestRing, latestAlarm, latestPicture;
-    // Database
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    // all elements to set red in alert mode
+    // Variablen für die Werte im Status der Realtime Database
+
+        public boolean door, alarm, lock, takePic, alert;
+            // door: Zustand der Tür -> Tür ist offen (true) / Tür ist geschlossen (false)
+            // alarm: Zustand der Alarmanlage -> Alarmanlage ist scharf (true) / Alarmanlage ist nicht scharf (false)
+            // lock: Zustand des Türschlosses -> Türschloss öffnet (true) / Türschloss öffnet nicht (false)
+            // takePic: Anfrage, dass vom ESP32 ein Bild gemacht werden soll -> mache ein Bild, bzw. ein Bild wird gemacht (true) / es wird, bzw. soll aktuell kein extra Bild gemacht werden
+            // alert: Zustand des Alarms -> es wurde ein Alarm ausgelöst und noch nicht quittiert (true) / es wurde kein Alarm ausgelöst oder bereits quittiert
+
+        public String latestRing, latestAlarm, latestPicture;
+            // latestRing: Zeitstempel der letzten Klingelanfrage
+            // latestAlarm: Zeitstempel des letzten Alarms
+            // latestPicture: Zeitstempel des letzten Bilds
+
+    // Realtime Database initialisieren
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        // Set Listener on Values of Status
-        setListener();
-        getLatestPicture("gs://tuerklingel-a0ba8.appspot.com/pictures/"+"Testfoto"+".jpg");
 
-        // subscribe the topics of ring and alert
+        // Setze einen Listener auf die Werte aus Status (Realtime Database)
+            setListener();
+
+        // Lade das neueste Bild aus dem Firebase Storage
+            getLatestPicture("gs://tuerklingel-a0ba8.appspot.com/pictures/"+"Testfoto"+".jpg");
+
+        // Abonniere die Topics des Firebase Cloud Messaging Service für den Alarm und das Klingeln
         FirebaseMessaging.getInstance().subscribeToTopic("/topics/ring");
         FirebaseMessaging.getInstance().subscribeToTopic("/topics/alarm");
-
-
     }
 
-    // function for open door button
-    public void btClickOpenDoor(android.view.View view){
-        try {
-            if (!lock){
-                toggleStatusValue(lock, "/status/lockopen");
-            }
-        }
-        catch (Exception e){
-            // Error
-        }
-    }
-    // function for alarm switch
-    public void switchToggleAlarm(android.view.View view){
-        try {
-            toggleStatusValue(alarm, "/status/alarmon");
-        }
-        catch (Exception e){
-            // Error
-        }
-    }
-    // function for setting listener on rt db status
-    public void setListener(){
-        // and references of status in the rt db
-        DatabaseReference doorRef = database.getReference("/status/door");
-        DatabaseReference alarmRef = database.getReference("/status/alarmon");
-        DatabaseReference lockRef = database.getReference("/status/lockopen");
-        DatabaseReference latestRingRef = database.getReference("/status/latestring");
-        DatabaseReference latestAlarmRef = database.getReference("/status/latestalarm");
-        DatabaseReference latestPictureRef = database.getReference("/status/latestpic");
-        DatabaseReference takePictureRef = database.getReference("/status/takepicture");
-        DatabaseReference alertRef = database.getReference("/status/alert");
-        // DataChange Listener on status values in the rt db
-        doorRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                try {
-                    door = dataSnapshot.getValue(Boolean.class);
-                    TextView doorstatusview = findViewById(R.id.doorstatus);
-                    if (door){
-                        doorstatusview.setText("open");
-                    }
-                    else {
-                        doorstatusview.setText("closed");
-                    }
-                }
-                catch (Exception e){
-                    Log.println(Log.INFO,"EventListener","Falscher Datentyp");
-                }
-            }
+    // AUSLAGERUNGSFUNKTIONEN
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
-        alarmRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                try {
-                    alarm = dataSnapshot.getValue(Boolean.class);
-                    //TextView alarmstatusview = findViewById(R.id.alarmstatus);
-                    Switch alarmswitch = findViewById(R.id.alarmswitch);
-                    if (alarm){
-                        //alarmstatusview.setText("Alarm: eingeschaltet");
-                        alarmswitch.setChecked(true);
-                    }
-                    else {
-                        //alarmstatusview.setText("Alarm: ausgeschaltet");
-                        alarmswitch.setChecked(false);
-                    }
-                }
-                catch (Exception e){
-                    Log.println(Log.INFO,"EventListener","Falscher Datentyp");
-                }
-            }
+        // Setzt Daten-Listener auf die einzelnen Werte des Status
+        public void setListener(){
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
-        lockRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                try {
-                    lock = dataSnapshot.getValue(Boolean.class);
-                    //TextView lockstatusview = findViewById(R.id.lockstatus);
-                    Button opener = findViewById(R.id.dooropener);
-                    if (lock){
-                        opener.setText("opening...");
-                        opener.setBackgroundColor(0xAA11FF22);
-                    }
-                    else {
-                        opener.setText("Open door");
-                        opener.setBackgroundColor(0xFF4A61E0);
-                    }
-                }
-                catch (Exception e){
-                    Log.println(Log.INFO,"EventListener","Falscher Datentyp");
-                }
-            }
+            // Benötigte Referenzen auf die Werte in der Realtime Database
+            DatabaseReference doorRef = database.getReference("/status/door");
+            DatabaseReference alarmRef = database.getReference("/status/alarmon");
+            DatabaseReference lockRef = database.getReference("/status/lockopen");
+            DatabaseReference latestRingRef = database.getReference("/status/latestring");
+            DatabaseReference latestAlarmRef = database.getReference("/status/latestalarm");
+            DatabaseReference latestPictureRef = database.getReference("/status/latestpic");
+            DatabaseReference takePictureRef = database.getReference("/status/takepicture");
+            DatabaseReference alertRef = database.getReference("/status/alert");
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
-        latestRingRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                try {
-                    latestRing = dataSnapshot.getValue(String.class);
-                    TextView viewLastRing = findViewById(R.id.latestring_textview);
-                    viewLastRing.setText(stringInMyDateFormat(latestRing));
-                }
-                catch (Exception e){
-                    Log.println(Log.INFO,"EventListener","Falscher Datentyp");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
-        latestAlarmRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                try {
-                    latestAlarm = dataSnapshot.getValue(String.class);
-                    TextView viewLastRing = findViewById(R.id.latestalarm_textview);
-                    viewLastRing.setText(stringInMyDateFormat(latestAlarm));
-                }
-                catch (Exception e){
-                    Log.println(Log.INFO,"EventListener","Falscher Datentyp");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
-        latestPictureRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                try {
-                    latestPicture = dataSnapshot.getValue(String.class);
-                    TextView viewLastPic = findViewById(R.id.latestpic_textview);
-                    viewLastPic.setText(stringInMyDateFormat(latestPicture));
-                    String urlLatestPic = ("gs://tuerklingel-a0ba8.appspot.com/pictures/"+latestPicture+".jpg");
-                    getLatestPicture(urlLatestPic);
-                }
-                catch (Exception e){
-                    Log.println(Log.INFO,"EventListener","Falscher Datentyp");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
-        takePictureRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                try {
-                    takePic = dataSnapshot.getValue(Boolean.class);
-                    Button requbtn = findViewById(R.id.requestpicture);
-                    if (!takePic){
-                        requbtn.setText("Request picture");
-                        requbtn.setBackgroundColor(0xFF4A61E0);
-                    }
-                }
-                catch (Exception e){
-                    Log.println(Log.INFO,"EventListener","Falscher Datentyp");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
-        alertRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                try {
-                    alert = dataSnapshot.getValue(Boolean.class);
-                    TextView alertView = findViewById(R.id.alert_textview);
-                    Button deactAlert = findViewById(R.id.deactivatealert);
-                    ColorActivity ca = new ColorActivity(alert);
-                    //ca.setColorButtons();
-                    if (alert){
-                        alertView.setVisibility(TextView.VISIBLE);
-                        deactAlert.setVisibility(TextView.VISIBLE);
-                    }
-                    else {
-                        alertView.setVisibility(TextView.INVISIBLE);
-                        deactAlert.setVisibility(TextView.INVISIBLE);
-                    }
-                }
-                catch (Exception e){
-                    Log.println(Log.INFO,"EventListener","Falscher Datentyp");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
-    }
-    // function for making an viewable format for a date out of the rt db
-    public String stringInMyDateFormat(String rtdbString){
-        return rtdbString.substring(0,2)+"."+rtdbString.substring(2,4)+"."+rtdbString.substring(4,8)+" "+rtdbString.substring(8,10)+":"+rtdbString.substring(10,12);
-    }
-    // Toggle Bool Variables in Realtime Database with Input of the current value
-    // an the path, which contain the value to Change
-    public void toggleStatusValue(Boolean currentvalue, String path){
-        try{
-            DatabaseReference toggleRef = database.getReference(path);
-            if (currentvalue){
-                toggleRef.setValue(false);
-            }
-            else{
-                toggleRef.setValue(true);
-            }
-        }
-        catch (Exception e){
-            // Fehler
-        }
-    }
-    // Refresh Button Click to get the newest picture from storage
-    public void btClickRefresh(android.view.View view){
-        String urlLatestPic = ("gs://tuerklingel-a0ba8.appspot.com/pictures/"+latestPicture+".jpg");
-        getLatestPicture(urlLatestPic);
-    }
-    // set the take picture value to true
-    public void btClickRequestPicture(android.view.View view){
-        try {
-            if (!takePic){
-                toggleStatusValue(takePic ,"/status/takepicture");
-                Button requbtn = findViewById(R.id.requestpicture);
-                requbtn.setText("Taking picture...");
-                requbtn.setBackgroundColor(0xAA11DD22);
-            }
-        }
-        catch (Exception error){
-            // error
-        }
-    }
-    // deactivate the alarm, set values alarmon and alert to false
-    public void btClickDeactivateAlarm(android.view.View view){
-        toggleStatusValue(alert ,"/status/alert");
-    }
-    // set picture in imageView in main from path
-    public void getLatestPicture(String path){
-        try {
-            // Picture download from Firebase Storage
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            // Url of the newest picture in storage
-            StorageReference gsReference = storage.getReferenceFromUrl(path);
-            ImageView mIm = (ImageView) findViewById(R.id.imageView);
-            final long ONE_MEGABYTE=1024*1024;
-            //https://stackoverflow.com/questions/57152775/how-to-set-an-imageview-with-a-picture-from-firebase-storage
-            gsReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            // DataChange Listener auf die einzelnen Referenzen
+            doorRef.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onSuccess(byte[] bytes) {
-                    Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                    mIm.setImageBitmap(bitmap);
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    try {
+                        // Schreibt den Status des Reetkontakt in das für den Türstatus vorgesehene Textview
+                        door = dataSnapshot.getValue(Boolean.class);
+                        TextView doorstatusview = findViewById(R.id.doorstatus);
+                        if (door){
+                            doorstatusview.setText("Offen");
+                        }
+                        else {
+                            doorstatusview.setText("Geschlossen");
+                        }
+                    }
+                    catch (Exception e){
+                        Log.println(Log.INFO,"EventListener","Falscher Datentyp");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                }
+            });
+            alarmRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    try {
+                        // Zieht aus der Database den hinterlegten Wert über den Status der Alarmanlage
+                        // und setzt entsprechend den Switch in die richtige Position
+                        alarm = dataSnapshot.getValue(Boolean.class);
+                        Switch alarmswitch = findViewById(R.id.alarmswitch);
+                        if (alarm){
+                            alarmswitch.setChecked(true);
+                        }
+                        else {
+                            alarmswitch.setChecked(false);
+                        }
+                    }
+                    catch (Exception e){
+                        Log.println(Log.INFO,"EventListener","Falscher Datentyp");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                }
+            });
+            lockRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // Prinzip ähnlich wie bei Alarmanlage, hier wird, wenn sich der Wert in der Database ändert,
+                    // der entsprechende Wert ausgelesen und dabei der Knopf zum Tür öffnen geändert
+                    // Geändert wird der Wert dabei entweder durch die App, false -> true (Tür soll geöffnet werden)
+                    // oder vom ESP32 true -> false (Türöffner öffnet die Tür nicht mehr)
+                    try {
+                        lock = dataSnapshot.getValue(Boolean.class);
+                        Button opener = findViewById(R.id.dooropener);
+                        if (lock){
+                            opener.setText("öffnet...");
+                            opener.setBackgroundColor(0xAA11FF22);
+                        }
+                        else {
+                            opener.setText("Öffne die Tür");
+                            opener.setBackgroundColor(0xFF4A61E0);
+                        }
+                    }
+                    catch (Exception e){
+                        Log.println(Log.INFO,"EventListener","Falscher Datentyp");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                }
+            });
+            latestRingRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // Bildet in das Textview das Datum und die Uhrzeit, wann zuletzt geklingelt wurde
+                    // (wird vom ESP32 in die Realtime Database eingetragen)
+                    try {
+                        latestRing = dataSnapshot.getValue(String.class);
+                        TextView viewLastRing = findViewById(R.id.latestring_textview);
+                        // Wert aus Database wird in ein anzeigbares Format gewandelt
+                        viewLastRing.setText(stringInMyDateFormat(latestRing));
+                    }
+                    catch (Exception e){
+                        Log.println(Log.INFO,"EventListener","Falscher Datentyp");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                }
+            });
+            latestAlarmRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // gleiche Funktion wie Value "latestRing", hier jedoch für den letzten Alarm der ausgelöst wurde
+                    try {
+                        latestAlarm = dataSnapshot.getValue(String.class);
+                        TextView viewLastRing = findViewById(R.id.latestalarm_textview);
+                        viewLastRing.setText(stringInMyDateFormat(latestAlarm));
+                    }
+                    catch (Exception e){
+                        Log.println(Log.INFO,"EventListener","Falscher Datentyp");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                }
+            });
+            latestPictureRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // gleiche Funktion wie Value "latestRing", hier jedoch für das letzte Bild, das aufgenommen wurde
+                    // zusätzlich wird, wenn sich der Wert ändert das Bild dazu aus dem Firebase Storage geladen
+                    try {
+                        latestPicture = dataSnapshot.getValue(String.class);
+                        TextView viewLastPic = findViewById(R.id.latestpic_textview);
+                        viewLastPic.setText(stringInMyDateFormat(latestPicture));
+                        // Laden des Bilds
+                        String urlLatestPic = ("gs://tuerklingel-a0ba8.appspot.com/pictures/"+latestPicture+".jpg");
+                        getLatestPicture(urlLatestPic);
+                    }
+                    catch (Exception e){
+                        Log.println(Log.INFO,"EventListener","Falscher Datentyp");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                }
+            });
+            takePictureRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // gleiche Funktionsweise wie "Tür öffnen" , hier um Bild von ESP32 anzufordern
+                    try {
+                        takePic = dataSnapshot.getValue(Boolean.class);
+                        Button requbtn = findViewById(R.id.requestpicture);
+                        if (!takePic){
+                            requbtn.setText("Mache ein Bild");
+                            requbtn.setBackgroundColor(0xFF4A61E0);
+                        }
+                        else if(takePic){
+                            requbtn.setText("Bild wird gemacht...");
+                            requbtn.setBackgroundColor(0xAA11DD22);
+                        }
+                    }
+                    catch (Exception e){
+                        Log.println(Log.INFO,"EventListener","Falscher Datentyp");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                }
+            });
+            alertRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // informiert über einen Alarm der vom ESP32 ausgelöst wurde
+                    // kann über Button der dann sichtbar ist quittiert werden
+                    try {
+                        alert = dataSnapshot.getValue(Boolean.class);
+                        TextView alertView = findViewById(R.id.alert_textview);
+                        Button deactAlert = findViewById(R.id.deactivatealert);
+                        // Wird ALarm ausgelöst, werden das Textview und der Button eingeblendet
+                        if (alert){
+                            alertView.setVisibility(TextView.VISIBLE);
+                            deactAlert.setVisibility(TextView.VISIBLE);
+                        }
+                        // und wieder ausgeblendet, wenn der Alarm wieder ausgeschaltet wurde
+                        else {
+                            alertView.setVisibility(TextView.INVISIBLE);
+                            deactAlert.setVisibility(TextView.INVISIBLE);
+                        }
+                    }
+                    catch (Exception e){
+                        Log.println(Log.INFO,"EventListener","Falscher Datentyp");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
                 }
             });
         }
-        catch (Exception e){
-            // Error
-        }
-    }
 
-    public void historychange(android.view.View view){
-        String button_text;
-        button_text = ((Button) view).getText().toString();
-        if (button_text.equals("History Ring")) {
-            Intent intent2 = new Intent(this, HistoryRingActivity.class);
-            startActivity(intent2);
-        }
-        else if(button_text.equals("History Alarm")){
-            Intent intent2 = new Intent(this, HistoryAlarmActivity.class);
-            startActivity(intent2);
-        }
-    }
+    // /AUSLAGERUNGSFUNKTIONEN
 
-    /*
-    public void setColorButtons(){
-        for (int i = 0; i<3; i++) {
-            Button btn = findViewById(idButtons[i]);
-            if (!alert){
-                btn.setBackgroundColor(0xFF4A61E0);
+    // HILFSFUNKTIONEN
+
+        // macht aus dem in der Realtime Database verwendeten Datumsformat ein anzeigbares Format
+        public String stringInMyDateFormat(String rtdbString){
+            // zieht die einzelnen Daten auseinander
+            // Transformation : DDMMYYYYhhmm -> DD.MM.YYYY hh:mm
+            return rtdbString.substring(0,2)+"."+rtdbString.substring(2,4)+"."+rtdbString.substring(4,8)+" "+rtdbString.substring(8,10)+":"+rtdbString.substring(10,12);
+        }
+
+        // Lädt ein Bild aus dem Firebase Storage, von einem angegebenen Pfad
+        public void getLatestPicture(String path){
+            try {
+                // Picture download from Firebase Storage
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                // Url of the newest picture in storage
+                StorageReference gsReference = storage.getReferenceFromUrl(path);
+                ImageView mIm = (ImageView) findViewById(R.id.imageView);
+                final long ONE_MEGABYTE=1024*1024;
+                //https://stackoverflow.com/questions/57152775/how-to-set-an-imageview-with-a-picture-from-firebase-storage
+                gsReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                        mIm.setImageBitmap(bitmap);
+                    }
+                });
             }
-            else{
-                btn.setBackgroundColor(0xFFDB2F07);
+            catch (Exception e){
+                // Error
             }
         }
-    }
-     */
+
+        // ändert den Wahrheitswert einer Variable in der Realtime Database, unter Angabe
+        // des aktuellen Zustands und des jeweiligen Pfads
+        public void toggleStatusValue(Boolean currentvalue, String path){
+            try{
+                DatabaseReference toggleRef = database.getReference(path);
+                if (currentvalue){
+                    toggleRef.setValue(false);
+                }
+                else{
+                    toggleRef.setValue(true);
+                }
+            }
+            catch (Exception e){
+                // Fehler
+            }
+        }
+
+    // /HILFSFUNKTIONEN
+
+    // KNOPFFUNKTIONEN
+
+        // Funktion für den "Tür öffnen" Knopf
+        public void btClickOpenDoor(android.view.View view){
+            try {
+                if (!lock){ // nur Clickbar, wenn ESP gerade nicht am Öffnen ist
+                    toggleStatusValue(lock, "/status/lockopen"); // Ändere den Wert in der Realtime Database
+                }
+            }
+            catch (Exception e){
+                // Error
+            }
+        }
+
+        // Knopf zum Aktualisieren des neuesten Bildes in der ImageView
+        public void btClickRefresh(android.view.View view){
+            // Lädt das neueste Bild aus dem Storage
+            String urlLatestPic = ("gs://tuerklingel-a0ba8.appspot.com/pictures/"+latestPicture+".jpg");
+            getLatestPicture(urlLatestPic);
+        }
+
+        // Fordert über die Realtime Database ein Bild an
+        public void btClickRequestPicture(android.view.View view){
+            try {
+                if (!takePic){ // nur setzbar, wenn nicht bereits ein Bildrequest gesendet wurde und noch nicht vom ESP32 abgearbeitet wurde
+                    toggleStatusValue(takePic ,"/status/takepicture");
+                }
+            }
+            catch (Exception error){
+                // error
+            }
+        }
+
+        // Quittiert den Alarm, der vom ESP32 ausgelöst wurde
+        public void btClickDeactivateAlarm(android.view.View view){
+            toggleStatusValue(alert ,"/status/alert");
+        }
+
+        // Öffnet die Historie von Klingelanfragen oder Alarmen
+        public void btHistoryChange(android.view.View view){
+            String button_text;
+            button_text = ((Button) view).getText().toString();
+            if (button_text.equals("Kingelanfragen")) {
+                Intent intent2 = new Intent(this, HistoryRingActivity.class);
+                startActivity(intent2);
+            }
+            else if(button_text.equals("Alarmauslösungen")){
+                Intent intent2 = new Intent(this, HistoryAlarmActivity.class);
+                startActivity(intent2);
+            }
+        }
+
+        // Funktion für den Schalter für den Alarm (eingeschaltet -> true)
+        public void switchToggleAlarm(android.view.View view){
+            // Funktionsprinzip: bei Clicken toggelt hier die Funktion den Wert in der Realtime Database
+            //                   anschließend sorgt der DataChange-Listener dafür, dass der Wert richtig
+            //                   in der App angezeigt wird
+            try {
+                toggleStatusValue(alarm, "/status/alarmon"); // Bei Betätigung, wird der Wert in der Realtime Database geändert
+            }
+            catch (Exception e){
+                // Error
+            }
+        }
+
+    // /KNOPFFUNKTIONEN
 }

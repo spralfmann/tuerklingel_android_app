@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="136dp"
-        android:text="Timestamp"
+        android:text="Bildzeitstempel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
@@ -21,8 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="96dp"
-        android:layout_marginEnd="84dp"
-        android:text="Last ring"
+        android:layout_marginEnd="32dp"
+        android:text="letzte Klingelanfrage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/alarmswitch" />
 
@@ -64,7 +64,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="4dp"
         android:onClick="btClickRequestPicture"
-        android:text="Request Picture"
+        android:text="Mach ein Bild"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/refreshpicture" />
 
@@ -88,7 +88,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="60dp"
         android:onClick="btClickOpenDoor"
-        android:text="Open door"
+        android:text="Öffne die Tür"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
@@ -99,19 +99,19 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="4dp"
         android:onClick="btClickRefresh"
-        android:text="Refresh Latest"
+        android:text="Lade das neueste Bild"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dooropener" />
 
     <Switch
         android:id="@+id/alarmswitch"
-        android:layout_width="100dp"
-        android:layout_height="48dp"
+        android:layout_width="133dp"
+        android:layout_height="47dp"
         android:layout_marginTop="52dp"
         android:layout_marginEnd="56dp"
         android:minHeight="48dp"
-        android:text="Alert"
         android:onClick="switchToggleAlarm"
+        android:text="Alarmanlage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
@@ -119,9 +119,9 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="85dp"
-        android:text="Last alert"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="80dp"
+        android:text="letzter Alarm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/alarmswitch" />
 
@@ -151,7 +151,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:text="door:"
+        android:text="Türstatus"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/doorstatus" />
@@ -177,10 +177,10 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:onClick="historychange"
-        android:text="History Ring"
+        android:onClick="btHistoryChange"
+        android:text="Kingelanfragen"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -189,8 +189,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:onClick="historychange"
-        android:text="History Alarm"
+        android:onClick="btHistoryChange"
+        android:text="Alarmauslösungen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button2"
         app:layout_constraintTop_toTopOf="parent" />
