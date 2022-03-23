@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                         TextView viewLastPic = findViewById(R.id.latestpic_textview);
                         viewLastPic.setText(stringInMyDateFormat(latestPicture));
                         // Laden des Bilds
-                        String urlLatestPic = ("gs://tuerklingel-a0ba8.appspot.com/pictures/"+latestPicture+".jpg");
+                        String urlLatestPic = ("gs://tuerklingel-a0ba8.appspot.com/pictures/"+"Testfoto"+".jpg");
                         getLatestPicture(urlLatestPic);
                     }
                     catch (Exception e){
@@ -367,11 +367,11 @@ public class MainActivity extends AppCompatActivity {
         public void btHistoryChange(android.view.View view){
             String button_text;
             button_text = ((Button) view).getText().toString();
-            if (button_text.equals("Kingelanfragen")) {
+            if (button_text.equals("Rings")) {
                 Intent intent2 = new Intent(this, HistoryRingActivity.class);
                 startActivity(intent2);
             }
-            else if(button_text.equals("Alarmauslösungen")){
+            else if(button_text.equals("Alarms")){
                 Intent intent2 = new Intent(this, HistoryAlarmActivity.class);
                 startActivity(intent2);
             }

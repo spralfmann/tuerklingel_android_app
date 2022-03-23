@@ -19,13 +19,16 @@ public class Ring {
     }
 
     // Get-Sets
+
     public String getPicUrl() {
         return picUrl;
     }
 
+
     public void setPicUrl(String picUrl) {
         this.picUrl = picUrl;
     }
+
 
     public String getRaw() {
         return raw;

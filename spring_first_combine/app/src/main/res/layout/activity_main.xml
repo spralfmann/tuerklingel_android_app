@@ -177,10 +177,10 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="8dp"
         android:onClick="btHistoryChange"
-        android:text="Kingelanfragen"
+        android:text="Rings"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -190,7 +190,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:onClick="btHistoryChange"
-        android:text="Alarmauslösungen"
+        android:text="Alarms"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button2"
         app:layout_constraintTop_toTopOf="parent" />
